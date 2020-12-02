@@ -6,8 +6,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import ngsep.sequences.SimpleEditDistanceMeasure;
 import ngsep.sequences.PairwiseAlignmentAffineGap;
@@ -28,23 +31,25 @@ public class TRFCandidateSelector {
 	// probability of indel, typically 0.1
 	private double indelProbability;
 
-	//list of candidates in case multiple tuple sizes are used
+	// list of candidates in case multiple tuple sizes are used
 	private ArrayList<TandemRepeat> allCandidates;
 
-	// max pattern size to look for, the bigger it is, the more time the algorithm takes
+	// max pattern size to look for, the bigger it is, the more time the
+	// algorithm takes
 	private int maxPatternSize;
 
 	// minimum alignment score for a tandem repeat to be reported
 	private int minimumAlignmentScore;
-	
+
 	// sequence name for this instance
 	private String sequenceName;
-	
+
 	private int matchScore;
-	
+
 	private int missScore;
 
-	//sum of data criteria for pm = 0.8, retrieved from https://github.com/Benson-Genomics-Lab/TRF/blob/master/src/tr30dat.c
+	// sum of data criteria for pm = 0.8, retrieved from
+	// https://github.com/Benson-Genomics-Lab/TRF/blob/master/src/tr30dat.c
 	int sumdata80[] = { 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 7, 8, 8, 9, 9, 6, 6,
 			7, 7, 7, 8, 8, 9, 9, 10, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 16, 17, 17, 18, 18, 19, 19,
 			20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31, 31, 32, 32,
@@ -138,7 +143,8 @@ public class TRFCandidateSelector {
 			802, 802, 803, 803, 804, 804, 804, 805, 805, 806, 806, 807, 807, 808, 808, 808, 809, 809, 810, 810, 811,
 			811, 811, 812, 812, 813, 813, 814, 814, 815, 815, 815, 816, 816, 817, 817, 818 };
 
-	//sum of data criteria for pm = 0.75, retrieved from https://github.com/Benson-Genomics-Lab/TRF/blob/master/src/tr30dat.c
+	// sum of data criteria for pm = 0.75, retrieved from
+	// https://github.com/Benson-Genomics-Lab/TRF/blob/master/src/tr30dat.c
 	int sumdata75[] = { 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 6, 6,
 			7, 7, 8, 8, 8, 9, 9, 10, 10, 11, 11, 11, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 13,
 			13, 13, 14, 14, 14, 15, 15, 16, 16, 16, 17, 17, 17, 18, 18, 18, 19, 19, 20, 20, 20, 21, 21, 21, 22, 22, 23,
@@ -231,19 +237,28 @@ public class TRFCandidateSelector {
 			559, 559, 559, 560, 560, 560, 561, 561, 561, 562, 562, 562, 563, 563, 563, 564, 564, 564, 564, 565, 565,
 			565, 566, 566, 566, 567 };
 
+	List<Integer> primeNumbers;
+
 	/**
 	 * Initializes this instance of a candidate selector
-	 * @param sequence sequence to be analyzed
-	 * @param sequenceName name of the sequence
-	 * @param matchProbability can be 0.8 or 0.75
-	 * @param indelProbability typically 0.1
-	 * @param maxSize maximum size of the pattern
-	 * @param minimumAlignmentScore minimum score for a pattern to be reported
+	 * 
+	 * @param sequence
+	 *            sequence to be analyzed
+	 * @param sequenceName
+	 *            name of the sequence
+	 * @param matchProbability
+	 *            can be 0.8 or 0.75
+	 * @param indelProbability
+	 *            typically 0.1
+	 * @param maxSize
+	 *            maximum size of the pattern
+	 * @param minimumAlignmentScore
+	 *            minimum score for a pattern to be reported
 	 */
-	public TRFCandidateSelector(String sequence, String sequenceName, double matchProbability, double indelProbability, int maxSize,
-			int minimumAlignmentScore, int matchScore, int missScore) {
+	public TRFCandidateSelector(String sequence, String sequenceName, double matchProbability, double indelProbability,
+			int maxSize, int minimumAlignmentScore, int matchScore, int missScore) {
 
-		//initializes empty atributes
+		// initializes empty atributes
 		this.indelProbability = indelProbability;
 		this.matchProbability = matchProbability;
 		this.sequenceName = sequenceName;
@@ -259,9 +274,12 @@ public class TRFCandidateSelector {
 		HashMap<Integer, TreeMap<Integer, ArrayList<TandemRepeat>>> initialC = null;
 		ArrayList<TandemRepeat> candidate = null;
 
+		int mid = maxSize / 2;
+		this.primeNumbers = primeNumbersBruteForce(mid);
 		long time = System.currentTimeMillis();
 
-		//in case of multiple tuple sizes, candidates are searched for each tuple size
+		// in case of multiple tuple sizes, candidates are searched for each
+		// tuple size
 		for (int i : tupleSizes) {
 			initialC = getCandidates(i);
 			candidate = refineCandidates(initialC);
@@ -272,7 +290,7 @@ public class TRFCandidateSelector {
 			candidate = null;
 
 		}
-		//after finding the candidates, overlap tandem repeats are removed
+		// after finding the candidates, overlap tandem repeats are removed
 		this.allCandidates.sort((o1, o2) -> Integer.compare(o1.getFirst(), o2.getFirst()));
 		removeOverlaps(this.allCandidates);
 		time = System.currentTimeMillis() - time;
@@ -282,18 +300,20 @@ public class TRFCandidateSelector {
 
 	/**
 	 * Method that finds candidates using TRF definition mainly
-	 * @param kTupleSize 
-	 * @return hashmap containing as keys distance of the TR, values another treemap containing 
-	 * index where the match was reported and list of TR at that index
+	 * 
+	 * @param kTupleSize
+	 * @return hashmap containing as keys distance of the TR, values another
+	 *         treemap containing index where the match was reported and list of
+	 *         TR at that index
 	 */
 	public HashMap<Integer, TreeMap<Integer, ArrayList<TandemRepeat>>> getCandidates(int kTupleSize) {
-		//Answer structure
+		// Answer structure
 		HashMap<Integer, TreeMap<Integer, ArrayList<TandemRepeat>>> candidates = new HashMap<Integer, TreeMap<Integer, ArrayList<TandemRepeat>>>();
 		ArrayList<Integer> occurrences = null;
 		ArrayList<Integer> matchesAtD = null;
 		ArrayList<TandemRepeat> tra = null;
 		TreeMap<Integer, ArrayList<TandemRepeat>> indexes = null;
-		//loop over the sequence to find candidates
+		// loop over the sequence to find candidates
 		for (int i = kTupleSize - 1; i < sequence.length(); i++) {
 			// i final index of probe p, inclusive
 			String probe = sequence.substring(i - kTupleSize + 1, i + 1);
@@ -304,39 +324,43 @@ public class TRFCandidateSelector {
 				for (int u = occurrences.size() - 1; u >= 0; u--) {
 					int j = occurrences.get(u);
 					int d = i - j;
-					// If d is greater than max size we will not calculate this tandem repeat
+					// If d is greater than max size we will not calculate this
+					// tandem repeat
 					if (d > maxPatternSize) {
 						break;
 					} else {
 						int totalMatches = 0;
 						int leftMostIndex = Integer.MAX_VALUE;
-						//Max delta distance to the left and right to check for indels
+						// Max delta distance to the left and right to check for
+						// indels
 						double maxDeltaDistance = 2.3 * Math.sqrt(indelProbability * d);
 						int maxDelta = (int) Math.floor(maxDeltaDistance);
-						//We get matches at this distance d
+						// We get matches at this distance d
 						matchesAtD = distanceList.getOrDefault(d, new ArrayList<Integer>());
-						//We add this match index to the list
+						// We add this match index to the list
 						matchesAtD.add(i);
 						int maxRange = i - d + 1;
-						//matches that happened before i-d+1 are removed, d could be taken as a sliding window
+						// matches that happened before i-d+1 are removed, d
+						// could be taken as a sliding window
 						matchesAtD.removeIf(s -> s < maxRange);
-						//We update distances list with new matches
+						// We update distances list with new matches
 						distanceList.put(d, matchesAtD);
-						//Now we search for the minimum element in matches array 
+						// Now we search for the minimum element in matches
+						// array
 						Integer min = matchesAtD.stream().mapToInt(v -> v).min().orElse(Integer.MAX_VALUE) - kTupleSize
 								+ 1; // moderate
 						if (min < leftMostIndex) {
 							leftMostIndex = min;
 						}
-						//we calculate sum of heads for this probe
+						// we calculate sum of heads for this probe
 						totalMatches += matchesAtD.size() * kTupleSize;
 						// update nearby distances list
 						for (int k = 1; k < maxDelta + 1; k++) {
 							int dleft = d - k;
 							int dright = d + k;
-							//if a match was found at left
+							// if a match was found at left
 							if (dleft > 0) {
-								//perform same operations for d
+								// perform same operations for d
 								if (distanceList.containsKey(dleft)) {
 									matchesAtD = distanceList.get(dleft);
 									matchesAtD.removeIf(s -> s < maxRange);
@@ -349,9 +373,9 @@ public class TRFCandidateSelector {
 									}
 								}
 							}
-							//if a match was found at right
+							// if a match was found at right
 							if (dright > 0) {
-								//perform same operations for d
+								// perform same operations for d
 								if (distanceList.containsKey(dright)) {
 									matchesAtD = distanceList.get(dright);
 									matchesAtD.removeIf(s -> s < maxRange);
@@ -365,31 +389,32 @@ public class TRFCandidateSelector {
 								}
 							}
 						}
-						//now we compute apparent size to test criteria
+						// now we compute apparent size to test criteria
 						int apparentSize = i - leftMostIndex + 1;
-						//limit apparent size
+						// limit apparent size
 						if (apparentSize > d) {
 							apparentSize = d;
 						}
-						//compute and test criteria
+						// compute and test criteria
 						int apTh = computeApparentSizeThreshold(d);
 						int suOh = computeSumOfHeadsThreshold(d, kTupleSize);
 						if (totalMatches >= suOh && apparentSize >= apTh) {
-							//if TR matches criteria it is created
+							// if TR matches criteria it is created
 							TandemRepeat trc = new TandemRepeat(j + 1, i, apparentSize, totalMatches);
 							indexes = candidates.getOrDefault(apparentSize,
 									new TreeMap<Integer, ArrayList<TandemRepeat>>());
-							//new candidate is added in index i
+							// new candidate is added in index i
 							tra = indexes.getOrDefault(i, new ArrayList<TandemRepeat>());
 							tra.add(trc);
 							indexes.put(i, tra);
-							//tr with apparent size is added to the answer hashmap
+							// tr with apparent size is added to the answer
+							// hashmap
 							candidates.put(apparentSize, indexes);
 						}
 					}
 				}
 			}
-			//finally we update historyList list
+			// finally we update historyList list
 			occurrences.add(i);
 			historyList.put(probe, occurrences);
 		}
@@ -399,6 +424,7 @@ public class TRFCandidateSelector {
 
 	/**
 	 * This method remove redundant candidates
+	 * 
 	 * @param candidates
 	 * @return
 	 */
@@ -406,15 +432,15 @@ public class TRFCandidateSelector {
 			HashMap<Integer, TreeMap<Integer, ArrayList<TandemRepeat>>> candidates) {
 		ArrayList<TandemRepeat> answer = new ArrayList<TandemRepeat>();
 
-		//refine candidates of same apparent size
+		// refine candidates of same apparent size
 		for (Integer apSize : candidates.keySet()) {
 			boolean notEnough = true;
 			while (notEnough) {
-				//matches with apsize d at index i
-				TreeMap<Integer, ArrayList<TandemRepeat>> indexes = candidates.get(apSize); 
-				
+				// matches with apsize d at index i
+				TreeMap<Integer, ArrayList<TandemRepeat>> indexes = candidates.get(apSize);
+
 				double maxDeltaDistance = 2.3 * Math.sqrt(indelProbability * apSize);
-				//maximum size at which there could be a match
+				// maximum size at which there could be a match
 				int maxDelta = (int) Math.floor(maxDeltaDistance);
 				boolean search = true;
 				int original = indexes.lastKey(); // we know original index
@@ -426,22 +452,28 @@ public class TRFCandidateSelector {
 				int lowerborder = largest - apSize - maxDelta;
 				int upperborder = largest - apSize;
 				indexes.remove(largest);
-				int beginning = finalC.getPatternBeginning() - finalC.getDistance(); // default beginning
+				int beginning = finalC.getPatternBeginning() - finalC.getDistance(); // default
+																						// beginning
 				while (search) {
-					//i dint find more redundant TR at this distance
+					// i dint find more redundant TR at this distance
 					if (indexes.keySet().isEmpty()) {
 						search = false;
 						notEnough = false; // is enough
 					} else {
 						largest = indexes.lastKey(); // next one
-						if (largest > upperborder) { //this Tr is redundant if it is above the border
+						if (largest > upperborder) { // this Tr is redundant if
+														// it is above the
+														// border
 							indexes.remove(largest);
-						} else if (largest >= lowerborder && largest <= upperborder) { // count, found another occurence
+						} else if (largest >= lowerborder && largest <= upperborder) { // count,
+																						// found
+																						// another
+																						// occurence
 							// compute beginning
 							beginning = indexes.get(largest).get(0).getPatternBeginning() - apSize;
 							// update num copies
 							numCopies++;
-							// update border 
+							// update border
 							lowerborder = largest - apSize - maxDelta;
 							upperborder = largest - apSize;
 
@@ -453,9 +485,10 @@ public class TRFCandidateSelector {
 					}
 
 				}
-				//for definition if a TR pass criteria num copies is at least of 2
+				// for definition if a TR pass criteria num copies is at least
+				// of 2
 				numCopies++;
-				//update TR and add it to answer
+				// update TR and add it to answer
 				finalC.setNumCopies(numCopies);
 				finalC.setFirst(beginning);
 				answer.add(finalC);
@@ -468,7 +501,9 @@ public class TRFCandidateSelector {
 	}
 
 	/**
-	 * Method that removes tandem repeats of different size and num copies overlapping the same section
+	 * Method that removes tandem repeats of different size and num copies
+	 * overlapping the same section
+	 * 
 	 * @param candidates
 	 */
 	public void removeOverlaps(ArrayList<TandemRepeat> candidates) {
@@ -476,16 +511,16 @@ public class TRFCandidateSelector {
 			return;
 		TandemRepeat bestC = candidates.get(0);
 		int indexBest = 0;
-		//minimum index of section
+		// minimum index of section
 		int left = bestC.getFirst();
-		//maximum index of section
+		// maximum index of section
 		int right = bestC.getLast();
 		int size = bestC.getTotalSize();
 		for (int i = 1; i < candidates.size(); i++) {
 			TandemRepeat trc = candidates.get(i);
 			int begin = trc.getFirst();
 			int end = trc.getLast();
-			//if the 2 TR are overlapped we update ref indexes
+			// if the 2 TR are overlapped we update ref indexes
 			if (isOverlapped(left, right, begin, end)) {
 				if (begin < left) {
 					left = begin;
@@ -493,8 +528,9 @@ public class TRFCandidateSelector {
 				if (end > right) {
 					right = end;
 				}
-				if (trc.getTotalSize() >= size) { // best, covering more distance
-					//update best candidate
+				if (trc.getTotalSize() >= size) { // best, covering more
+													// distance
+					// update best candidate
 					candidates.remove(indexBest);
 					size = trc.getTotalSize();
 					i--;
@@ -517,6 +553,7 @@ public class TRFCandidateSelector {
 
 	/**
 	 * This method allign candidates with ideal sequence and refine num copies
+	 * 
 	 * @param candidates
 	 * @throws IOException
 	 */
@@ -526,27 +563,15 @@ public class TRFCandidateSelector {
 		PrintWriter pw = new PrintWriter(new FileWriter("data\\outTR.txt", true));
 		String line = "";
 		for (TandemRepeat trCandidate : candidates) {
-			//we compute pattern
+			// we compute pattern
 			String pattern = sequence.substring(trCandidate.getPatternBeginning(), trCandidate.getLast() + 1);
 			double times = trCandidate.getNumCopies();
 
 			String realseq = sequence.substring(trCandidate.getFirst(), trCandidate.getLast() + 1);
 
-			//if a pattern can be split in two, we split it until necessary
-			int mid = pattern.length() / 2; // get the middle of the String
-			boolean keepCutting = true;
-			while (keepCutting) {
-				String[] parts = { pattern.substring(0, mid), pattern.substring(mid) };
-				if (parts[0].equals(parts[1])) {
-					pattern = parts[0];
-					times = times * 2;
-					mid = pattern.length() / 2;
-				}
-				else{
-					keepCutting = false;
-				}
-			}
-			
+			String[] result = cutPattern(pattern, times);
+			pattern = result[0];
+			times = Double.parseDouble(result[1]);
 
 			// extend sequence to get times
 			int beg = trCandidate.getFirst();
@@ -554,7 +579,8 @@ public class TRFCandidateSelector {
 			List<CharSequence> temp = null;
 			boolean keepGoing = true;
 
-			// extend backwards N times in case algorithm didn't find these copies
+			// extend backwards N times in case algorithm didn't find these
+			// copies
 			beg -= patternSize;
 			while (keepGoing) {
 
@@ -581,7 +607,8 @@ public class TRFCandidateSelector {
 			int beginning = trCandidate.getFirst();
 			int reallength = realseq.length();
 
-			//if we found more matching copies update info that is going to be written
+			// if we found more matching copies update info that is going to be
+			// written
 			if (times > trCandidate.getNumCopies()) {
 				beginning = beg;
 				reallength = trCandidate.getLast() - beg + 1;
@@ -594,10 +621,10 @@ public class TRFCandidateSelector {
 			double forwardtimes = times;
 			keepGoing = true;
 
-			//end += patternSize;
+			// end += patternSize;
 			while (keepGoing) {
 
-				if (end  + patternSize < sequence.length()) {
+				if (end + patternSize < sequence.length()) {
 					temp = a.pairwiseAlignment(pattern, sequence.substring(end, end + patternSize));
 					String s1 = temp.get(0).toString();
 					String s2 = temp.get(1).toString();
@@ -616,8 +643,9 @@ public class TRFCandidateSelector {
 				}
 
 			}
-			//end -= patternSize;
-			//if we found more matching copies forward we update info that is going to be written
+			// end -= patternSize;
+			// if we found more matching copies forward we update info that is
+			// going to be written
 			if (forwardtimes > times) {
 				times = forwardtimes;
 				trCandidate.setLast(end);
@@ -625,31 +653,32 @@ public class TRFCandidateSelector {
 				realseq = sequence.substring(beg, trCandidate.getLast() + 1);
 			}
 
-			//calculate ideal seq by multiplying the pattern
+			// calculate ideal seq by multiplying the pattern
 			String toallign = "";
 			for (int i = 0; i < times; i++) {
 				toallign += pattern;
 			}
-			
-			//allign final sequences
+
+			// allign final sequences
 			List<CharSequence> r = a.pairwiseAlignment(toallign, realseq);
 
 			// now we check if the TR is gonna be reported
-			int alscore =  alignmentScore(r.get(0).toString(), r.get(1).toString());
+			int alscore = alignmentScore(r.get(0).toString(), r.get(1).toString());
 			boolean report = alscore >= minimumAlignmentScore;
-			
+
 			trCandidate.setSequenceName(sequenceName);
 
-			//write line to file
-			if (report && realseq.length() >= 25 ) {
-				if((times < 3.0 && pattern.length() >= 12) || times >= 3.0 ){
-					if((times < 3.0 && alscore >= minimumAlignmentScore + 10) || (times < 4.0 && times >= 3.0 && alscore >= minimumAlignmentScore + 2) || times >= 4.0){
+			// write line to file
+			if (report && realseq.length() >= 25) {
+				if ((times < 3.0 && pattern.length() >= 12) || times >= 3.0) {
+					if ((times < 3.0 && alscore >= minimumAlignmentScore + 10)
+							|| (times < 4.0 && times >= 3.0 && alscore >= minimumAlignmentScore + 2) || times >= 4.0) {
 						line = sequenceName + " " + beginning + " " + trCandidate.getLast() + " "
-								+ trCandidate.getDistance() + " " + times + " " + reallength + " " + pattern + " " + realseq
-								+ " " + toallign + " " + r + " " + alscore;
+								+ trCandidate.getDistance() + " " + times + " " + reallength + " " + pattern + " "
+								+ realseq + " " + toallign + " " + r + " " + alscore;
 						pw.println(line);
 					}
-					
+
 				}
 			}
 
@@ -657,10 +686,96 @@ public class TRFCandidateSelector {
 		pw.close();
 	}
 
-	/**
+	public String[] cutPattern(String pattern, double times) {
+		String[] ans = new String[2];
+
+		String newpattern = pattern;
+		double newtimes = times;
+
+		ans[0] = pattern;
+		ans[1] = times + "";
+		int patLength = newpattern.length();
+		for (Integer n : primeNumbers) {
+			// if a pattern can be split in two, we split it until necessary
+			// it can be split by this number
+			if (n == 2) {
+				int mid = newpattern.length() / 2; // get the middle of the
+													// String
+				boolean keepCutting = true;
+				while (keepCutting) {
+					String[] parts = { newpattern.substring(0, mid), newpattern.substring(mid) };
+					if (parts[0].equals(parts[1])) {
+						newpattern = parts[0];
+						newtimes = times * 2;
+						mid = newpattern.length() / 2;
+					} else {
+						keepCutting = false;
+					}
+				}
+				if (!newpattern.equals(pattern)) {
+					ans[0] = newpattern;
+					ans[1] = newtimes + "";
+					return ans;
+				}
+			} else { // any other prime number
+				if (patLength % n == 0) {
+					boolean couldCut = true;
+					ArrayList<String> subpatterns = new ArrayList<String>();
+					int limit = 0;
+					for (int i = 0; i < patLength; i += n) {
+						limit = i + n;
+						String subpattern = pattern.substring(i, limit);
+						subpatterns.add(subpattern);
+					}
+					String firstp = subpatterns.get(0);
+					for (int i = 1; i < subpatterns.size(); i++) {
+						couldCut &= firstp.equals(subpatterns.get(i));
+						firstp = subpatterns.get(i);
+						if (!couldCut) {
+							break;
+						}
+					}
+					if (couldCut) {
+						newpattern = firstp;
+						newtimes = newtimes * n;
+						ans[0] = newpattern;
+						ans[1] = newtimes + "";
+						return ans;
+					}
+				}
+			}
+
+		}
+
+		return ans;
+	}
+
+	public static List<Integer> primeNumbersBruteForce(int n) {
+		List<Integer> primeNumbers = new LinkedList<>();
+		for (int i = 2; i <= n; i++) {
+			if (isPrimeBruteForce(i)) {
+				primeNumbers.add(i);
+			}
+		}
+		return primeNumbers;
+	}
+
+	public static boolean isPrimeBruteForce(int number) {
+		for (int i = 2; i < number; i++) {
+			if (number % i == 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/*
 	 * Computes hamming distance from two strings
+	 * 
 	 * @param str1
+	 * 
 	 * @param str2
+	 * 
 	 * @return
 	 */
 	public int hammingDist(String str1, String str2) {
@@ -675,6 +790,7 @@ public class TRFCandidateSelector {
 
 	/**
 	 * Checks if two alligned strings have at least N same characters
+	 * 
 	 * @param str1
 	 * @param str2
 	 * @param minimum
@@ -684,14 +800,12 @@ public class TRFCandidateSelector {
 		int i = 0, count = 0;
 
 		while (i < str1.length()) {
-			if(str1.charAt(i)=='-'||str2.charAt(i)=='-'){
-				count-=missScore;
-			}
-			else if(str1.charAt(i) != str2.charAt(i)){
-				count-=missScore;
-			}
-			else if (str1.charAt(i) == str2.charAt(i))
-				count+=matchScore;
+			if (str1.charAt(i) == '-' || str2.charAt(i) == '-') {
+				count -= missScore;
+			} else if (str1.charAt(i) != str2.charAt(i)) {
+				count -= missScore;
+			} else if (str1.charAt(i) == str2.charAt(i))
+				count += matchScore;
 			i++;
 		}
 		return count;
@@ -718,6 +832,7 @@ public class TRFCandidateSelector {
 
 	/**
 	 * Returns sum of heads criteria for distance d and tuple size k
+	 * 
 	 * @param d
 	 * @param k
 	 * @return
@@ -732,40 +847,41 @@ public class TRFCandidateSelector {
 
 	/**
 	 * Returns sum of heads criteria for distance d
+	 * 
 	 * @param d
 	 * @param k
 	 * @return
-		 */
-		public int computeApparentSizeThreshold(int d) {
-			if (d > 10) {
-				return (int) Math.floor(d * 0.9);
-			} else if (d > 5) {
-				return (int) Math.floor(d * 0.85);
-			} else {
-				return (int) Math.floor(d * 0.8);
-			}
-	
+	 */
+	public int computeApparentSizeThreshold(int d) {
+		if (d > 10) {
+			return (int) Math.floor(d * 0.9);
+		} else if (d > 5) {
+			return (int) Math.floor(d * 0.85);
+		} else {
+			return (int) Math.floor(d * 0.8);
 		}
-	
-		/**
-		 * @return candidates found
-		 */
-		public ArrayList<TandemRepeat> getAllCandidates() {
-			return allCandidates;
-		}
-	
-		/**
-		 * @return the sequence
-		 */
-		public String getSequence() {
-			return sequence;
-		}
-	
-		/**
-		 * @return the historyList
-		 */
-		public HashMap<String, ArrayList<Integer>> getHistoryList() {
-			return historyList;
+
+	}
+
+	/**
+	 * @return candidates found
+	 */
+	public ArrayList<TandemRepeat> getAllCandidates() {
+		return allCandidates;
+	}
+
+	/**
+	 * @return the sequence
+	 */
+	public String getSequence() {
+		return sequence;
+	}
+
+	/**
+	 * @return the historyList
+	 */
+	public HashMap<String, ArrayList<Integer>> getHistoryList() {
+		return historyList;
 	}
 
 	/**

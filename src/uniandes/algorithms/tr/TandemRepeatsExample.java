@@ -19,7 +19,7 @@ public class TandemRepeatsExample {
 	public static void main(String[] args) throws Exception {
 		
 		
-		String fastaFilename = "./data/seqfull.fa";
+		String fastaFilename = "./data/S288C_20150113.fa";
 		// Assemble sequence
 		
 
@@ -43,7 +43,7 @@ public class TandemRepeatsExample {
 			System.out.println("Length of the sequence read: " + seqLength);
 			
 			double mProb = 0.8;
-			TRFCandidateSelector trfc = new TRFCandidateSelector(sequence, seq.getName(), mProb, 0.1, 25, 300, 2, 4);
+			TRFCandidateSelector trfc = new TRFCandidateSelector(sequence, seq.getName(), mProb, 0.1, 25, 40, 2, 4);
 			
 			
 				ArrayList<TandemRepeat> candidates = trfc.getAllCandidates();
