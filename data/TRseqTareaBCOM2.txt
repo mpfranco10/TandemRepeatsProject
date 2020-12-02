@@ -1,0 +1,1 @@
+Start End Period NumReps TotalSize Pattern Sequence IdealSeq Alignment 
