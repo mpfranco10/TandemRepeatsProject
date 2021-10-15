@@ -294,7 +294,8 @@ public class TRFCandidateSelector {
 		this.allCandidates.sort((o1, o2) -> Integer.compare(o1.getFirst(), o2.getFirst()));
 		removeOverlaps(this.allCandidates);
 		time = System.currentTimeMillis() - time;
-		System.out.println("Time searching candidates: " + time + "ms");
+		time = time / 1000;
+		System.out.println("Time searching candidates: " + time + " secs");
 
 	}
 

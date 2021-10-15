@@ -1,190 +1,190 @@
 Length of the sequence read: 43270923
-Time searching candidates: 210373ms
-Time performing allignments: 11619ms
+Time searching candidates: 263179ms
+Time performing allignments: 23787ms
 Length of the sequence read: 490520
-Time searching candidates: 215ms
-Time performing allignments: 144ms
+Time searching candidates: 137ms
+Time performing allignments: 94ms
 Length of the sequence read: 134525
-Time searching candidates: 48ms
-Time performing allignments: 28ms
+Time searching candidates: 84ms
+Time performing allignments: 45ms
 Length of the sequence read: 35937250
-Time searching candidates: 128801ms
-Time performing allignments: 8139ms
+Time searching candidates: 143933ms
+Time performing allignments: 17372ms
 Length of the sequence read: 36413819
-Time searching candidates: 146316ms
-Time performing allignments: 7866ms
+Time searching candidates: 239902ms
+Time performing allignments: 18703ms
 Length of the sequence read: 35502694
-Time searching candidates: 100227ms
-Time performing allignments: 7502ms
+Time searching candidates: 191160ms
+Time performing allignments: 11635ms
 Length of the sequence read: 29958434
-Time searching candidates: 111080ms
-Time performing allignments: 8274ms
+Time searching candidates: 119290ms
+Time performing allignments: 8700ms
 Length of the sequence read: 31248787
-Time searching candidates: 102331ms
-Time performing allignments: 19620ms
+Time searching candidates: 132112ms
+Time performing allignments: 12188ms
 Length of the sequence read: 29697621
-Time searching candidates: 71244ms
-Time performing allignments: 6385ms
+Time searching candidates: 91098ms
+Time performing allignments: 9298ms
 Length of the sequence read: 28443022
-Time searching candidates: 70674ms
-Time performing allignments: 6207ms
+Time searching candidates: 98105ms
+Time performing allignments: 18783ms
 Length of the sequence read: 23012720
-Time searching candidates: 39358ms
-Time performing allignments: 11328ms
+Time searching candidates: 68314ms
+Time performing allignments: 8582ms
 Length of the sequence read: 23207287
-Time searching candidates: 50655ms
-Time performing allignments: 8766ms
+Time searching candidates: 59491ms
+Time performing allignments: 5798ms
 Length of the sequence read: 29021106
-Time searching candidates: 70760ms
-Time performing allignments: 5753ms
+Time searching candidates: 76806ms
+Time performing allignments: 8119ms
 Length of the sequence read: 27531856
-Time searching candidates: 57569ms
-Time performing allignments: 5522ms
+Time searching candidates: 113138ms
+Time performing allignments: 25454ms
 Length of the sequence read: 206004
-Time searching candidates: 74ms
-Time performing allignments: 47ms
+Time searching candidates: 174ms
+Time performing allignments: 136ms
 Length of the sequence read: 157458
-Time searching candidates: 40ms
-Time performing allignments: 29ms
+Time searching candidates: 144ms
+Time performing allignments: 83ms
 Length of the sequence read: 128256
-Time searching candidates: 42ms
-Time performing allignments: 24ms
+Time searching candidates: 122ms
+Time performing allignments: 84ms
 Length of the sequence read: 88500
-Time searching candidates: 27ms
-Time performing allignments: 19ms
+Time searching candidates: 66ms
+Time performing allignments: 54ms
 Length of the sequence read: 32941
-Time searching candidates: 10ms
-Time performing allignments: 8ms
+Time searching candidates: 21ms
+Time performing allignments: 21ms
 Length of the sequence read: 31094
-Time searching candidates: 8ms
-Time performing allignments: 8ms
+Time searching candidates: 24ms
+Time performing allignments: 18ms
 Length of the sequence read: 24772
-Time searching candidates: 11ms
-Time performing allignments: 5ms
+Time searching candidates: 34ms
+Time performing allignments: 18ms
 Length of the sequence read: 22545
-Time searching candidates: 9ms
-Time performing allignments: 4ms
+Time searching candidates: 22ms
+Time performing allignments: 11ms
 Length of the sequence read: 21787
-Time searching candidates: 18ms
-Time performing allignments: 5ms
+Time searching candidates: 42ms
+Time performing allignments: 12ms
 Length of the sequence read: 21421
-Time searching candidates: 5ms
-Time performing allignments: 4ms
+Time searching candidates: 13ms
+Time performing allignments: 14ms
 Length of the sequence read: 20829
+Time searching candidates: 12ms
+Time performing allignments: 14ms
+Length of the sequence read: 19971
+Time searching candidates: 10ms
+Time performing allignments: 10ms
+Length of the sequence read: 19457
+Time searching candidates: 11ms
+Time performing allignments: 11ms
+Length of the sequence read: 17477
+Time searching candidates: 20ms
+Time performing allignments: 10ms
+Length of the sequence read: 16676
+Time searching candidates: 11ms
+Time performing allignments: 11ms
+Length of the sequence read: 16417
+Time searching candidates: 9ms
+Time performing allignments: 7ms
+Length of the sequence read: 15493
+Time searching candidates: 8ms
+Time performing allignments: 12ms
+Length of the sequence read: 15426
+Time searching candidates: 10ms
+Time performing allignments: 6ms
+Length of the sequence read: 14476
+Time searching candidates: 4ms
+Time performing allignments: 5ms
+Length of the sequence read: 13061
+Time searching candidates: 4ms
+Time performing allignments: 7ms
+Length of the sequence read: 12884
+Time searching candidates: 8ms
+Time performing allignments: 6ms
+Length of the sequence read: 12792
+Time searching candidates: 7ms
+Time performing allignments: 8ms
+Length of the sequence read: 11522
+Time searching candidates: 7ms
+Time performing allignments: 9ms
+Length of the sequence read: 11447
+Time searching candidates: 16ms
+Time performing allignments: 6ms
+Length of the sequence read: 11093
+Time searching candidates: 5ms
+Time performing allignments: 6ms
+Length of the sequence read: 10901
+Time searching candidates: 12ms
+Time performing allignments: 7ms
+Length of the sequence read: 10794
 Time searching candidates: 5ms
 Time performing allignments: 4ms
-Length of the sequence read: 19971
-Time searching candidates: 4ms
-Time performing allignments: 3ms
-Length of the sequence read: 19457
-Time searching candidates: 4ms
-Time performing allignments: 4ms
-Length of the sequence read: 17477
-Time searching candidates: 9ms
-Time performing allignments: 4ms
-Length of the sequence read: 16676
-Time searching candidates: 7ms
-Time performing allignments: 5ms
-Length of the sequence read: 16417
-Time searching candidates: 3ms
-Time performing allignments: 2ms
-Length of the sequence read: 15493
-Time searching candidates: 3ms
-Time performing allignments: 3ms
-Length of the sequence read: 15426
-Time searching candidates: 3ms
-Time performing allignments: 3ms
-Length of the sequence read: 14476
-Time searching candidates: 3ms
-Time performing allignments: 2ms
-Length of the sequence read: 13061
-Time searching candidates: 3ms
-Time performing allignments: 3ms
-Length of the sequence read: 12884
-Time searching candidates: 3ms
-Time performing allignments: 3ms
-Length of the sequence read: 12792
-Time searching candidates: 4ms
-Time performing allignments: 4ms
-Length of the sequence read: 11522
-Time searching candidates: 3ms
-Time performing allignments: 3ms
-Length of the sequence read: 11447
-Time searching candidates: 6ms
-Time performing allignments: 2ms
-Length of the sequence read: 11093
-Time searching candidates: 2ms
-Time performing allignments: 3ms
-Length of the sequence read: 10901
-Time searching candidates: 7ms
-Time performing allignments: 5ms
-Length of the sequence read: 10794
-Time searching candidates: 2ms
-Time performing allignments: 2ms
 Length of the sequence read: 10699
-Time searching candidates: 14ms
-Time performing allignments: 3ms
+Time searching candidates: 23ms
+Time performing allignments: 6ms
 Length of the sequence read: 10686
 Time searching candidates: 3ms
-Time performing allignments: 3ms
+Time performing allignments: 7ms
 Length of the sequence read: 10595
-Time searching candidates: 2ms
-Time performing allignments: 2ms
+Time searching candidates: 5ms
+Time performing allignments: 5ms
 Length of the sequence read: 10512
-Time searching candidates: 3ms
-Time performing allignments: 3ms
-Length of the sequence read: 10434
-Time searching candidates: 3ms
-Time performing allignments: 3ms
-Length of the sequence read: 10422
-Time searching candidates: 3ms
-Time performing allignments: 2ms
-Length of the sequence read: 10311
-Time searching candidates: 2ms
-Time performing allignments: 2ms
-Length of the sequence read: 10296
 Time searching candidates: 6ms
-Time performing allignments: 2ms
+Time performing allignments: 6ms
+Length of the sequence read: 10434
+Time searching candidates: 5ms
+Time performing allignments: 7ms
+Length of the sequence read: 10422
+Time searching candidates: 6ms
+Time performing allignments: 7ms
+Length of the sequence read: 10311
+Time searching candidates: 4ms
+Time performing allignments: 6ms
+Length of the sequence read: 10296
+Time searching candidates: 18ms
+Time performing allignments: 7ms
 Length of the sequence read: 10210
-Time searching candidates: 2ms
-Time performing allignments: 2ms
+Time searching candidates: 5ms
+Time performing allignments: 7ms
 Length of the sequence read: 10060
-Time searching candidates: 3ms
-Time performing allignments: 2ms
+Time searching candidates: 6ms
+Time performing allignments: 5ms
 Length of the sequence read: 9889
-Time searching candidates: 11ms
-Time performing allignments: 2ms
-Length of the sequence read: 9603
-Time searching candidates: 2ms
-Time performing allignments: 2ms
-Length of the sequence read: 9548
-Time searching candidates: 501ms
-Time performing allignments: 3ms
-Length of the sequence read: 8529
-Time searching candidates: 3ms
-Time performing allignments: 3ms
-Length of the sequence read: 8197
-Time searching candidates: 2ms
+Time searching candidates: 27ms
 Time performing allignments: 4ms
+Length of the sequence read: 9603
+Time searching candidates: 3ms
+Time performing allignments: 11ms
+Length of the sequence read: 9548
+Time searching candidates: 21ms
+Time performing allignments: 6ms
+Length of the sequence read: 8529
+Time searching candidates: 4ms
+Time performing allignments: 7ms
+Length of the sequence read: 8197
+Time searching candidates: 5ms
+Time performing allignments: 5ms
 Length of the sequence read: 7820
-Time searching candidates: 2ms
-Time performing allignments: 2ms
+Time searching candidates: 3ms
+Time performing allignments: 4ms
 Length of the sequence read: 7140
-Time searching candidates: 2ms
-Time performing allignments: 3ms
+Time searching candidates: 4ms
+Time performing allignments: 5ms
 Length of the sequence read: 6269
-Time searching candidates: 3ms
-Time performing allignments: 3ms
+Time searching candidates: 5ms
+Time performing allignments: 4ms
 Length of the sequence read: 6261
-Time searching candidates: 3ms
-Time performing allignments: 3ms
+Time searching candidates: 6ms
+Time performing allignments: 4ms
 Length of the sequence read: 6000
-Time searching candidates: 3ms
-Time performing allignments: 3ms
+Time searching candidates: 2ms
+Time performing allignments: 5ms
 Length of the sequence read: 5510
-Time searching candidates: 7ms
-Time performing allignments: 2ms
+Time searching candidates: 11ms
+Time performing allignments: 3ms
 Length of the sequence read: 4236
-Time searching candidates: 8ms
-Time performing allignments: 2ms
-Total time: 21 mins
+Time searching candidates: 10ms
+Time performing allignments: 3ms
+Total time: 29 mins

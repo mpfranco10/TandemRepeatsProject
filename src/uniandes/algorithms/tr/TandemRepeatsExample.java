@@ -43,7 +43,7 @@ public class TandemRepeatsExample {
 			System.out.println("Length of the sequence read: " + seqLength);
 			
 			double mProb = 0.8;
-			TRFCandidateSelector trfc = new TRFCandidateSelector(sequence, seq.getName(), mProb, 0.1, 25, 40, 2, 4);
+			TRFCandidateSelector trfc = new TRFCandidateSelector(sequence, seq.getName(), mProb, 0.1, 25, 30, 2, 4);
 			
 			
 				ArrayList<TandemRepeat> candidates = trfc.getAllCandidates();
@@ -51,13 +51,14 @@ public class TandemRepeatsExample {
 				long time = System.currentTimeMillis();
 				trfc.allignCandidates(candidates);
 				time = System.currentTimeMillis()-time;
-				System.out.println("Time performing allignments: "+time + "ms");
+				time = time / 1000;
+				System.out.println("Time performing allignments: "+time + " secs");
 			
 			
 		}
 		timeT = System.currentTimeMillis()-timeT;
-		timeT = timeT / 60000;
-		System.out.println("Total time: "+timeT + " mins");
+		timeT = timeT / 1000;
+		System.out.println("Total time: "+timeT + " secs");
 	}
 
 }
